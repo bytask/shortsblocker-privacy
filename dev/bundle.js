@@ -769,7 +769,14 @@ ${H("hideEmbedShareButton")} .ytp-share-button, ${H("hideEmbedShareButton")} .yt
       if (nearCorner) { e.stopPropagation(); e.preventDefault(); document.querySelector(".ytp-fullscreen-button")?.click(); }
     }, true);
   }
-  const CAMERA_SVG = '<svg viewBox="0 0 24 24"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zM9 2 7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2H9zm3 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg>';
+  // Built with DOM APIs (no innerHTML): youtube.com enforces Trusted Types.
+  function cameraIcon() {
+    const NS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(NS, "svg"); svg.setAttribute("viewBox", "0 0 24 24");
+    const path = document.createElementNS(NS, "path");
+    path.setAttribute("d", "M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zM9 2 7.17 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3.17L15 2H9zm3 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z");
+    svg.appendChild(path); return svg;
+  }
   function snapshotPass() {
     const existing = document.querySelectorAll(".sb-player-btn, .sb-mobile-snapshot");
     if (!settings.addTakeSnapshot) { existing.forEach((b) => b.remove()); return; }
@@ -777,12 +784,12 @@ ${H("hideEmbedShareButton")} .ytp-share-button, ${H("hideEmbedShareButton")} .yt
     const right = document.querySelector("#movie_player .ytp-right-controls");
     if (right && !IS_MOBILE) {
       const b = document.createElement("button");
-      b.className = "ytp-button sb-player-btn"; b.title = IS_JA ? "スナップショットを保存" : "Take snapshot"; b.innerHTML = CAMERA_SVG;
+      b.className = "ytp-button sb-player-btn"; b.title = IS_JA ? "スナップショットを保存" : "Take snapshot"; b.appendChild(cameraIcon());
       b.addEventListener("click", (e) => { e.stopPropagation(); document.dispatchEvent(new CustomEvent("sb-snapshot")); });
       right.prepend(b);
     } else if (IS_MOBILE && document.querySelector("ytm-watch video, #player video")) {
       const b = document.createElement("button");
-      b.className = "sb-mobile-snapshot"; b.setAttribute("aria-label", IS_JA ? "スナップショットを保存" : "Take snapshot"); b.innerHTML = CAMERA_SVG;
+      b.className = "sb-mobile-snapshot"; b.setAttribute("aria-label", IS_JA ? "スナップショットを保存" : "Take snapshot"); b.appendChild(cameraIcon());
       b.addEventListener("click", () => document.dispatchEvent(new CustomEvent("sb-snapshot")));
       document.body.appendChild(b);
     }

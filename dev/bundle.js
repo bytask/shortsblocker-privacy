@@ -1,3 +1,4 @@
+window.__sbStore = window.__sbStore || {}; window.browser = { storage: { local: { get: async (d) => ({ ...d, ...window.__sbStore }), set: async (o) => { Object.assign(window.__sbStore, o); (window.__sbListeners||[]).forEach(fn => fn(Object.fromEntries(Object.entries(o).map(([k,v]) => [k,{newValue:v}])), "local")); } }, onChanged: { addListener: (fn) => { (window.__sbListeners = window.__sbListeners || []).push(fn); } } }, runtime: { getURL: () => "", sendMessage: async () => {}, sendNativeMessage: async () => {} }, permissions: {} };
 // Feature registry — the single source of truth for options (popup) and behaviour (content/page scripts).
 // key: storage key + html[data-sb-<key>] attribute. type: "bool" | "select". platforms: d = desktop, m = mobile.
 // Labels are inline (ja/en) so the popup needs no extra locale plumbing.
